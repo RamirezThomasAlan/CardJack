@@ -201,3 +201,267 @@ h1.game-title {
     transition: transform 0.3s ease;
 }
 
+.card.red {
+    color: #d32;
+}
+
+.card.back {
+    background: linear-gradient(45deg, #1c4c5c, #2a8f88);
+    background-size: 10px 10px;
+    border: 2px solid #fff;
+}
+
+.card.back::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-value {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.card-suit {
+    font-size: 2.2rem;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+button {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    min-width: 140px;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.hit-btn {
+    background: linear-gradient(to bottom, #4caf50, #388e3c);
+    color: white;
+}
+
+.stand-btn {
+    background: linear-gradient(to bottom, #f44336, #d32f2f);
+    color: white;
+}
+
+.deal-btn, .playagain-btn {
+    background: linear-gradient(to bottom, #4ecdc4, #2a8f88);
+    color: white;
+}
+
+.message {
+    text-align: center;
+    font-size: 1.5rem;
+    margin: 20px 0;
+    min-height: 40px;
+    color: #4ecdc4;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.chip-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.chip {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.chip.selected {
+    transform: scale(1.15);
+    box-shadow: 0 0 15px #4ecdc4;
+}
+
+.chip-5 {
+    background: linear-gradient(to bottom, #2196f3, #1976d2);
+}
+
+.chip-10 {
+    background: linear-gradient(to bottom, #4caf50, #388e3c);
+}
+
+.chip-25 {
+    background: linear-gradient(to bottom, #f44336, #d32f2f);
+}
+
+.chip-100 {
+    background: linear-gradient(to bottom, #ff9800, #f57c00);
+}
+
+.bet-info {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 15px;
+    color: #a9c9d8;
+}
+
+.hand-value {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #4ecdc4;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    h1.game-title {
+        font-size: 2.2rem;
+    }
+    
+    #welcome-screen h1 {
+        font-size: 2.8rem;
+    }
+    
+    .card {
+        width: 60px;
+        height: 90px;
+    }
+    
+    .card-value {
+        font-size: 1.6rem;
+    }
+    
+    .card-suit {
+        font-size: 1.8rem;
+    }
+    
+    button {
+        padding: 12px 20px;
+        font-size: 1rem;
+        min-width: 120px;
+    }
+    
+    .score-value {
+        font-size: 1.5rem;
+    }
+    
+    .area-title {
+        font-size: 1.2rem;
+    }
+    
+    .chip {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1.game-title {
+        font-size: 1.8rem;
+    }
+    
+    #welcome-screen h1 {
+        font-size: 2.2rem;
+    }
+    
+    #welcome-screen {
+        padding: 20px;
+    }
+    
+    .card {
+        width: 50px;
+        height: 75px;
+    }
+    
+    .card-value {
+        font-size: 1.3rem;
+    }
+    
+    .card-suit {
+        font-size: 1.5rem;
+    }
+    
+    button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        min-width: 100px;
+    }
+    
+    .controls {
+        gap: 10px;
+    }
+    
+    .score-value {
+        font-size: 1.3rem;
+    }
+    
+    .chip {
+        width: 40px;
+        height: 40px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Animaciones */
+@keyframes dealCard {
+    0% { transform: translateY(-100px) rotate(-10deg); opacity: 0; }
+    100% { transform: translateY(0) rotate(0); opacity: 1; }
+}
+
+.card.dealt {
+    animation: dealCard 0.5s ease forwards;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    15%, 45%, 75% { transform: translateX(-15px); }
+    30%, 60%, 90% { transform: translateX(15px); }
+}
+
+.shake {
+    animation: shake 0.7s ease;
+}
