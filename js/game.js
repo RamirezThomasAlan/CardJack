@@ -218,4 +218,207 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    function determineWinner() {
+        const playerValue = calculateHandValue(playerCards);
+        const dealerValue = calculateHandValue(dealerCards);
+        
+        gameState = 'game-over';
+        
+        if (dealerValue > 21) {
+            // Dealer se pasa
+            showMessage("¡El repartidor se pasa! ¡Ganas!");
+            const winnings = currentBet * 2;
+            chips += winnings;
+            wins += winnings - currentBet;
+        } else if (dealerValue > playerValue) {
+            // Gana dealer
+            showMessage("¡El repartidor gana!");
+        } else if (playerValue > dealerValue) {
+            // Gana jugador
+            showMessage("¡Ganas!");
+            const winnings = currentBet * 2;
+            chips += winnings;
+            wins += winnings - currentBet;
+        } else {
+            // Empate
+            showMessage("¡Empate!");
+            chips += currentBet;
+        }
+        
+        currentBet = 0;
+        showPlayAgain();
+        updateUI();
+    }
+    
+    function updatePlayerCards() {
+        playerCardsEl.innerHTML = '';
+        playerCards.forEach(card => {
+            const cardEl = createCardElement(card);
+            playerCardsEl.appendChild(cardEl);
+        });
+        
+        // Actualizar puntos
+        const playerValue = calculateHandValue(playerCards);
+        playerPointsEl.textContent = playerValue;
+    }
+    
+    function updateDealerCards(revealAll) {
+        dealerCardsEl.innerHTML = '';
+        dealerCards.forEach((card, index) => {
+            if (index === 0 && !revealAll && gameState !== 'game-over') {
+                // Mostrar carta oculta para la primera carta del dealer
+                const hiddenCardEl = document.createElement('div');
+                hiddenCardEl.className = 'card back';
+                dealerCardsEl.appendChild(hiddenCardEl);
+            } else {
+                const cardEl = createCardElement(card);
+                dealerCardsEl.appendChild(cardEl);
+            }
+        });
+        
+        // Actualizar puntos si se revela todo
+        if (revealAll || gameState === 'game-over') {
+            const dealerValue = calculateHandValue(dealerCards);
+            dealerPointsEl.textContent = dealerValue;
+        } else {
+            // Solo mostrar valor de la carta visible
+            if (dealerCards.length > 1) {
+                const visibleCard = dealerCards[1];
+                const visibleCardValue = visibleCard.value === 'A' ? 11 : 
+                                       (['K', 'Q', 'J'].includes(visibleCard.value) ? 10 : 
+                                       parseInt(visibleCard.value));
+                dealerPointsEl.textContent = visibleCardValue + ' + ?';
+            }
+        }
+    }
+    
+    function createCardElement(card) {
+        const cardEl = document.createElement('div');
+        cardEl.className = `card ${card.suit === '♥' || card.suit === '♦' ? 'red' : ''}`;
+        
+        const valueEl = document.createElement('div');
+        valueEl.className = 'card-value';
+        valueEl.textContent = card.value;
+        
+        const suitEl = document.createElement('div');
+        suitEl.className = 'card-suit';
+        suitEl.textContent = card.suit;
+        
+        cardEl.appendChild(valueEl);
+        cardEl.appendChild(suitEl);
+        
+        // Añadir animación
+        setTimeout(() => {
+            cardEl.classList.add('dealt');
+        }, 10);
+        
+        return cardEl;
+    }
+    
+    function updateUI() {
+        chipsEl.textContent = chips;
+        betEl.textContent = currentBet;
+        winsEl.textContent = wins;
+        betInfoEl.textContent = `Apuesta actual: ${currentBet}`;
+        
+        // Actualizar estado de los botones
+        if (gameState === 'betting') {
+            dealBtn.disabled = (currentBet <= 0);
+            hitBtn.disabled = true;
+            standBtn.disabled = true;
+            dealBtn.style.display = 'block';
+            hitBtn.style.display = 'block';
+            standBtn.style.display = 'block';
+            playAgainBtn.style.display = 'none';
+            chipElements.forEach(chip => chip.style.pointerEvents = 'auto');
+        } else if (gameState === 'player-turn') {
+            dealBtn.disabled = true;
+            hitBtn.disabled = false;
+            standBtn.disabled = false;
+            dealBtn.style.display = 'block';
+            hitBtn.style.display = 'block';
+            standBtn.style.display = 'block';
+            playAgainBtn.style.display = 'none';
+        } else {
+            dealBtn.disabled = (gameState !== 'game-over');
+            hitBtn.disabled = true;
+            standBtn.disabled = true;
+        }
+        
+        // Actualizar fichas seleccionadas
+        chipElements.forEach(chip => {
+            const chipValue = parseInt(chip.getAttribute('data-value'));
+            chip.classList.toggle('selected', chipValue === currentBet);
+        });
+    }
+    
+    function showMessage(text) {
+        messageEl.textContent = text;
+    }
+    
+    function showPlayAgain() {
+        dealBtn.style.display = 'none';
+        hitBtn.style.display = 'none';
+        standBtn.style.display = 'none';
+        playAgainBtn.style.display = 'block';
+    }
+    
+    function resetGame() {
+        dealerCards = [];
+        playerCards = [];
+        currentBet = 0;
+        gameState = 'betting';
+        
+        dealerCardsEl.innerHTML = '';
+        playerCardsEl.innerHTML = '';
+        dealerPointsEl.textContent = '0';
+        playerPointsEl.textContent = '0';
+        
+        chipElements.forEach(chip => chip.style.pointerEvents = 'auto');
+        
+        showMessage("¡Haga su apuesta para comenzar!");
+        updateUI();
+    }
+    
+    function setupEventListeners() {
+        // Botón de inicio
+        startBtn.addEventListener('click', () => {
+            welcomeScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+        });
+        
+        // Botón Repartir
+        dealBtn.addEventListener('click', () => {
+            if (gameState === 'betting' || gameState === 'game-over') {
+                startGame();
+            }
+        });
+        
+        // Botón Pedir
+        hitBtn.addEventListener('click', playerHit);
+        
+        // Botón Plantarse
+        standBtn.addEventListener('click', playerStand);
+        
+        // Botón Jugar de nuevo
+        playAgainBtn.addEventListener('click', resetGame);
+        
+        // Fichas de apuesta
+        chipElements.forEach(chip => {
+            chip.addEventListener('click', () => {
+                if (gameState !== 'betting') return;
+                
+                const chipValue = parseInt(chip.getAttribute('data-value'));
+                if (chips >= chipValue) {
+                    currentBet += chipValue;
+                    updateUI();
+                } else {
+                    showMessage("¡No tienes suficientes fichas!");
+                    setTimeout(() => {
+                        showMessage("¡Haga su apuesta para comenzar!");
+                    }, 2000);
+                }
+            });
+        });
+    }
 });
